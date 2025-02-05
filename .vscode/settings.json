@@ -1,0 +1,8 @@
+{
+  "editor.formatOnSave": true,
+  "editor.insertSpaces": true,
+  "terminal.integrated.defaultProfile.windows": "Command Prompt",
+  "code-runner.executorMapByGlob": {
+    "streamlit_app.py": "python -m streamlit run $fileName"
+  }
+}
