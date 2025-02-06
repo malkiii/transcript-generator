@@ -1,6 +1,6 @@
 # 🎙️ Transcript Generator App
 
-This is a [Streamlit](https://streamlit.io/) application that generates transcripts from audio files. The application utilizes the OpenAI `whisper-large-v3-turbo` model for speech recognition to convert speech to text with common formats (.txt, .srt, .vtt) and high accuracy.
+Transcript Generator is a [Streamlit](https://streamlit.io/) application that generates transcripts from audio files. The application utilizes the OpenAI `whisper-large-v3-turbo` model for speech recognition to convert speech to text with common formats (.txt, .srt, .vtt) and high accuracy.
 
 ## Local Setup
 
