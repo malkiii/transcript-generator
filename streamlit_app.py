@@ -129,6 +129,13 @@ if generate_button:
 
     st.rerun()
 
+
+if (
+    "generation_error" in st.session_state
+    and st.session_state.generation_error is not None
+):
+    st.error(f"❌ Error: {st.session_state.generation_error}")
+
 if st.session_state.transcript is not None:
     st.success("✅ Transcription complete!")
 
@@ -144,9 +151,3 @@ if st.session_state.transcript is not None:
             data=st.session_state.transcript,
             use_container_width=True,
         )
-
-if (
-    "generation_error" in st.session_state
-    and st.session_state.generation_error is not None
-):
-    st.error(f"❌ Error: {st.session_state.generation_error}")
