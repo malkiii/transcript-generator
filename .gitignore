@@ -27,7 +27,6 @@ venv.bak/
 
 # Streamlit
 .streamlit/secrets.toml
-.streamlit/config.toml
 
 # OS
 .DS_Store
