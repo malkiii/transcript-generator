@@ -15,8 +15,8 @@ def transcript_to_vtt(transcripts: List[Dict[str, object]]) -> str:
     vtt_lines = ["WEBVTT", ""]  # Start with WEBVTT header
 
     for i, entry in enumerate(transcripts, start=1):
-        start_time = format_timestamp(entry["timestamp"][0])
-        end_time = format_timestamp(entry["timestamp"][1])
+        start_time = format_timestamp(entry["start"])
+        end_time = format_timestamp(entry["end"])
         text = entry["text"].strip()
 
         vtt_lines.append(f"{start_time} --> {end_time}")
@@ -31,8 +31,8 @@ def transcript_to_srt(transcripts: List[Dict[str, object]]) -> str:
     srt_lines = []
 
     for i, entry in enumerate(transcripts, start=1):
-        start_time = format_timestamp(entry["timestamp"][0], srt=True)
-        end_time = format_timestamp(entry["timestamp"][1], srt=True)
+        start_time = format_timestamp(entry["start"], srt=True)
+        end_time = format_timestamp(entry["end"], srt=True)
         text = entry["text"].strip()
 
         srt_lines.append(str(i))  # Index
@@ -45,8 +45,9 @@ def transcript_to_srt(transcripts: List[Dict[str, object]]) -> str:
 
 if __name__ == "__main__":
     transcripts = [
-        {"timestamp": [0.0, 2.5], "text": "Hello, world!"},
-        {"timestamp": [3.0, 5.0], "text": "This is a test."},
+        {"start": 0.0, "end": 2.5, "text": "Hello, world!"},
+        {"start": 2.5, "end": 5.0, "text": "This is a test."},
+        {"start": 5.0, "end": 7.5, "text": "Goodbye!"},
     ]
 
     vtt_output = transcript_to_vtt(transcripts)

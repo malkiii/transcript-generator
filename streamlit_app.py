@@ -1,8 +1,7 @@
 import os
 import toml
-import requests
+from groq import Groq
 import streamlit as st
-from base64 import b64encode
 from transcript_formatter import transcript_to_srt, transcript_to_vtt
 
 # Load secrets based on environment
@@ -11,24 +10,20 @@ if os.getenv("ENV") == "production":
 else:
     secrets = toml.load(".streamlit/secrets.toml")
 
+# Set up Groq client
+client = Groq(api_key=secrets["GROQ_API_KEY"])
 
-def transcribe_audio(audio_data, return_timestamps=False):
+
+def transcribe_audio(file_name, audio_file, return_timestamps=False):
     try:
-        headers = {"Authorization": f"Bearer {secrets["HUGGINGFACE_TOKEN"]}"}
-        payload = {
-            "inputs": b64encode(audio_data).decode("utf-8"),
-            "parameters": {"return_timestamps": return_timestamps},
-        }
-
-        response = requests.post(
-            "https://api-inference.huggingface.co/models/openai/whisper-large-v3-turbo",
-            headers=headers,
-            json=payload,
-            timeout=600,  # 10 min timeout for large files
+        # Create a translation of the audio file
+        translation = client.audio.transcriptions.create(
+            file=(file_name, audio_file),
+            model="whisper-large-v3-turbo",
+            response_format="text" if not return_timestamps else "verbose_json",
         )
 
-        data = response.json()
-        result = data["chunks"] if return_timestamps else data["text"]
+        result = translation.segments if return_timestamps else translation
 
         st.session_state.generation_error = None
 
@@ -58,9 +53,9 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file:
     file_size = uploaded_file.size
-    if file_size > 10 * 1024 * 1024:
+    if file_size > 20 * 1024 * 1024:
         st.warning(
-            "⚠️ Files more than 10MB may cause an **error**. Please use a smaller one. Or try to reduce the size using a video-to-mp3 converter, or a file compressor tool."
+            "⚠️ Files more than 20MB may cause an **error**. Please use a smaller one. Or try to reduce the size using a video-to-mp3 converter, or a file compressor tool."
         )
 
 OUTPUT_FORMATS = [
@@ -107,6 +102,7 @@ if generate_button:
         with st.spinner("📝 Generating transcript..."):
             # Perform transcription if we have audio data
             transcript = transcribe_audio(
+                file_name,
                 audio_data,
                 output_format != OUTPUT_FORMATS[0],
             )
