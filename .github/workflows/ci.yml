@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Runs at 00:00 UTC every day
+    - cron: "0 0 * * *"
+
+jobs:
+  push-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Configure Git
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+      - name: Create and push empty commit
+        run: |
+          git commit --allow-empty -m "ci: daily commit [skip ci]"
+          git push origin master
